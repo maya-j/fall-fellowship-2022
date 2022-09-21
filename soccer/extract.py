@@ -1,4 +1,4 @@
-import csv
+"""Extracts MLS data into a dict"""
 
 def get_data():
     import csv

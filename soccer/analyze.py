@@ -1,3 +1,7 @@
+"""
+Identifies the exponent that produces the most accurate win % prediction for MLS
+"""
+
 import numpy as np
 from extract import get_data
 from statistics import mean
@@ -7,9 +11,11 @@ def get_predicted_win_percentage(goals_scored, goals_allowed, exponent):
 
     return (var_R**exponent) / (var_R**exponent + 1)
 
+#find the best exponent for the predicted win % calculation
 def find_best_exponent(team_data):
     best_exponent = {}
     all_exponents = {}
+    #calculate predicted percentage win for each team over a range of exponents
     for team,info in team_data.items():
         goals_scored = info["goals_scored"]
         goals_allowed = info["goals_allowed"]
@@ -18,7 +24,9 @@ def find_best_exponent(team_data):
         #predicted = [(exp, actual_win_percentage - get_predicted_win_percentage(goals_scored, goals_allowed, exp)) for exp in range(0, 20, 1)]
         predicted = [(exp, actual_win_percentage - get_predicted_win_percentage(goals_scored, goals_allowed, exp)) for exp in np.linspace(0, 20, 101)]
         best = min(predicted, key=lambda tup:abs(tup[1]))
-        if len(all_exponents) is 0:
+        
+        #add result for all potential exponents to a dictionary
+        if len(all_exponents) == 0:
             for exp in predicted:
                 all_exponents[exp[0]] = [exp[1]]
         else:
