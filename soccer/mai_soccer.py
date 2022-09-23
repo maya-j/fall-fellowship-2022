@@ -14,6 +14,7 @@ def actual_win_percentage(total_wins, games_played):
 def find_exponent(data):
     num_of_teams = len(data) - 1 # minus the header row
     predicted = []
+    results = pd.DataFrame(columns=["exponent", "mean_error"])
 
     for i in range(1, num_of_teams + 1):
         total_wins = data.W[i]
@@ -23,12 +24,14 @@ def find_exponent(data):
         actual_win_percent = actual_win_percentage(float(total_wins), float(games_played))
         R_score = get_R_score(float(total_goals), float(goals_against))
         possible_exp = np.linspace(0, 20, 201)
-
+        
         for exponent in possible_exp:
             predicted_win_percent = predicted_win_percentage(R_score, exponent)
             error = actual_win_percent - predicted_win_percent
             predicted.append((exponent, error))
-
+            results = results.append({"exponent": exponent, "mean_error": error}, ignore_index = True)
+    
+    print(results)
     best_exp = min(predicted, key=lambda x: abs(x[1]))
     return best_exp[0]
 
