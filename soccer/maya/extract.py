@@ -1,12 +1,12 @@
 """Extracts MLS data into a dict"""
 
-def get_data():
+def get_data(filename):
     import csv
 
     data = {}
  
     # opening and reading the CSV file
-    with open('mls_2016.csv', mode ='r') as file:
+    with open(filename, mode ='r') as file:
         csvFile = csv.reader(file)
         for line in csvFile:
             if line[0] != "Club":

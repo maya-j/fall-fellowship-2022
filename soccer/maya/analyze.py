@@ -3,9 +3,9 @@ Identifies the exponent that produces the most accurate win % prediction for MLS
 """
 
 import numpy as np
-from extract import get_data
 from statistics import mean
 import pandas as pd
+from extract import get_data
 
 def get_predicted_win_percentage(goals_scored, goals_allowed, exponent):
     var_R = goals_scored/goals_allowed
@@ -40,26 +40,25 @@ def find_best_exponent(team_data):
     print(min(all_exponents_means, key=lambda tup:tup[1]))
 
 #attempt 2 - worked better
-def find_exponent_method_2():
+def find_exponent_method_2(filename):
     #read data into dataframe
-    soccer_data = pd.read_csv("mls_2013-16.csv")
-    soccer_data['actual-win']=soccer_data['W']/(soccer_data['L']+soccer_data['W'])
+    soccer_data = pd.read_csv(filename)
+    soccer_data['actual-win']=soccer_data['W']/soccer_data['GP']
     soccer_data['ratio'] = soccer_data['G']/soccer_data['GA']
 
-    #calculates mean error for each exponent and puts that into a dataframe
+    #calculates mean error for each exponent across all teams and puts that into a dataframe
     exp_results = pd.DataFrame(columns=["exponent", "mean_error"])
-    exp_results.loc[len(exp_results.index)] = [1,2]
     for exp in np.linspace(0, 20, 101):
         exp_results.loc[len(exp_results.index)] = [exp,
             np.mean(abs(soccer_data['actual-win']-(soccer_data['ratio']**exp/(1+(soccer_data['ratio']**exp)))))]
 
     print(exp_results)
-    print(exp_results[exp_results.mean_error == exp_results.mean_error.min()])
+    print("Best Exponent:\n", exp_results[exp_results.mean_error == exp_results.mean_error.min()])
 
  
 
 if __name__=="__main__":
-    #data = get_data()
+    #data = get_data('../mls_2016.csv')
     #find_best_exponent(data)
 
-    find_exponent_method_2()
+    find_exponent_method_2('../mls_2013-16.csv')
